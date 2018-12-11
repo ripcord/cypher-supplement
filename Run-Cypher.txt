@@ -1,0 +1,57 @@
+1. Install Docker
+2. Pull the necessary Docker images
+	"docker pull hewhodocks/cypher:latest"
+	"docker pull gcc"
+	"docker pull openjdk"
+	"docker pull python"
+3. Start compiler containers
+	"./cont.sh start"
+4. Run the image
+	"docker run -d --name cypher -p 8080:8080 -p 8081:8081 -p 3306:3306 -p 80:80 -v /var/run/docker.sock:/var/run/docker.sock --cpuset-cpus 0-1 -m 1024m --memory-swap 1024m hewhodocks/cypher:latest"
+5. Get into container
+	"docker exec -it [NAME OF CONTAINER] /bin/bash"
+6. "cd cypher/cypher-backend/src/main/resources"
+7. "nano application.properties"
+8. Write and save the following:
+	"server.port = 8081"
+9. "cd ../../../.."
+10. "mvn clean install"
+11. "cd cypher-frontend"
+12. "mvn exec:java &"
+13. "cd ../cypher-backend"
+14. "mvn exec:java &"
+15. Run script "conts.sh stop python-cypher openjdk-cypher gcc-cypher"
+
+
+
+Contents of "cont.sh":
+
+#!/bin/bash
+
+if [ "$1" == "start" ] ; then
+	javac /cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.java
+	java -cp /cypher/cypher-backend/src/main/java edu.sunypoly.cypher.backend.service.DockerManager
+	rm /cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.class
+elif [ "$1" == "stop" ] ; then
+	for cont in "$@" ; do
+		if ! [ "$cont" == "stop" ] ; then
+			echo
+			echo "Stopping Docker container '$cont'..."
+			if $(docker stop $cont 1>/dev/null 2>&1) ; then
+				echo "Stopped Docker container '$cont'."
+				echo "Removing Docker container '$cont'..."
+				if $(docker rm $cont 1>/dev/null 2>&1) ; then
+					echo "Removed Docker container '$cont'."
+				else
+					echo "Error: Failed to remove Docker container '$cont'."
+				fi
+			else
+				echo "Error: Failed to stop Docker container '$cont'."
+			fi
+		fi
+	done
+else
+	echo "Invalid arguments: $@"
+fi
+
+
