@@ -4,10 +4,13 @@ if [ "$1" == "start" ] ; then
 	if $(javac "$HOME"/cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.java 2>/dev/null) ; then
 		java -cp "$HOME"/cypher/cypher-backend/src/main/java edu.sunypoly.cypher.backend.service.DockerManager
 		rm "$HOME"/cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.class
-	else
-		javac "$HOME"/git/cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.java
+	elif $(javac "$HOME"/git/cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.java 2>/dev/null) ; then
 		java -cp "$HOME"/git/cypher/cypher-backend/src/main/java edu.sunypoly.cypher.backend.service.DockerManager
 		rm "$HOME"/git/cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.class
+	else
+		javac /cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.java
+		java -cp /cypher/cypher-backend/src/main/java/ edu.sunypoly.cypher.backend.service.DockerManager
+		rm /cypher/cypher-backend/src/main/java/edu/sunypoly/cypher/backend/service/DockerManager.class
 	fi
 elif [[ "$1" == "stop" && "$#" > 1 ]] ; then
 	for cont in "$@" ; do
