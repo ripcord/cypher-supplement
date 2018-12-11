@@ -10,11 +10,15 @@
 	"docker run -d --name cypher -p 8080:8080 -p 8081:8081 -p 3306:3306 -p 80:80 -v /var/run/docker.sock:/var/run/docker.sock --cpuset-cpus 0-1 -m 1024m --memory-swap 1024m hewhodocks/cypher:latest"
 5. Get into container
 	"docker exec -it [NAME OF CONTAINER] /bin/bash"
+5a. "git clone https://github.com/ripcord/cypher-supplement.git"
 6. "cd cypher/cypher-backend/src/main/resources"
 7. "nano application.properties"
 8. Write and save the following:
 	"server.port = 8081"
-9. "cd ../../../.."
+9. "cd ../../.."
+9a. "nano pom.xml"
+9b. Comment out "db" dependency
+9c. "cd .."
 10. "mvn clean install"
 11. "cd cypher-frontend"
 12. "mvn exec:java &"
